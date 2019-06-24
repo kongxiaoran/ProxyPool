@@ -26,8 +26,9 @@ class RedisClient(object):
         if not re.match('\d+\.\d+\.\d+\.\d+\:\d+', proxy):
             print('代理不符合规范', proxy, '丢弃')
             return
-        if not self.db.zscore(REDIS_KEY, proxy):
-            return self.db.zadd(REDIS_KEY, score, proxy)
+        if not self.db.zscore(REDIS_KEY,-1,proxy):
+            # 这里使用的是 self.db.zadd(REDIS_KEY, {proxy:score})而不是 zadd(REDIS_KEY, score, proxy) redis3.0更新的地方   author:kxr
+            return self.db.zadd(REDIS_KEY, {proxy:score})
     
     def random(self):
         """
